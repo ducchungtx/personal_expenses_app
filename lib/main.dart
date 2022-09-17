@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import './transaction.dart';
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -10,46 +11,47 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<Transaction> transactions = [
+    Transaction(
+      id: 't1',
+      title: 'New shoes',
+      amount: 69.99,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Weekly Grociers',
+      amount: 16.53,
+      date: DateTime.now(),
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text("Flutter APP"),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        // mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: const <Widget>[
-          SizedBox(
+        children: <Widget>[
+          const SizedBox(
             width: double.infinity,
             child: Card(
               color: Colors.blue,
@@ -58,9 +60,63 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Card(
-            color: Colors.red,
-            child: Text('LIST OF TX'),
-          )
+            elevation: 5,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: <Widget>[
+                  TextField(),
+                  TextField(),
+                ],
+              ),
+            ),
+          ),
+          Column(
+            children: transactions.map((tx) {
+              return Card(
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 15,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.purple, width: 2),
+                      ),
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        '\$ ${tx.amount}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.purple,
+                        ),
+                      ),
+                    ), // For Price area
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          tx.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          DateFormat.yMMMEd().format(tx.date),
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        )
+                      ],
+                    ), // Display info
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
